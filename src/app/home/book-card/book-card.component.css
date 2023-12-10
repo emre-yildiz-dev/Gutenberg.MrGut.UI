@@ -1,0 +1,11 @@
+.card {
+  width: 18rem; /* Fixed width */
+  height: 25rem; /* Fixed height */
+  margin-bottom: 1rem; /* Optional: For spacing between cards */
+}
+
+.card-img-top {
+  width: 100%; /* Make image fill the card width */
+  height: 15rem; /* Fixed height for the image */
+  object-fit: cover; /* This will prevent the image from stretching/distorting */
+}

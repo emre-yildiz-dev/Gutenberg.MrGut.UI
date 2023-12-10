@@ -1,0 +1,7 @@
+.search-bar{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 500px;
+    padding: 10px;
+}

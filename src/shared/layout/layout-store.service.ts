@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { distinctUntilChanged, pluck } from 'rxjs/operators';
-import { LayoutConfig } from './layout-config';
+import { Injectable } from "@angular/core";
+import { BehaviorSubject, Observable } from "rxjs";
+import { distinctUntilChanged, pluck } from "rxjs/operators";
+import { LayoutConfig } from "./layout-config";
 
 @Injectable()
 export class LayoutStoreService {
   public readonly config$: Observable<LayoutConfig>;
   private readonly initialLayoutConfig: LayoutConfig = {
-    sidebarExpanded: false
+    sidebarExpanded: true,
   };
   private configSource: BehaviorSubject<LayoutConfig>;
 
@@ -18,7 +18,7 @@ export class LayoutStoreService {
 
   get sidebarExpanded(): Observable<boolean> {
     return this.config$.pipe(
-      pluck('sidebarExpanded'),
+      pluck("sidebarExpanded"),
       distinctUntilChanged()
     ) as Observable<boolean>;
   }

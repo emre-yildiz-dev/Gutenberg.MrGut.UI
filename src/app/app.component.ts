@@ -1,10 +1,10 @@
-import { Component, Injector, OnInit, Renderer2 } from '@angular/core';
-import { AppComponentBase } from '@shared/app-component-base';
-import { SignalRAspNetCoreHelper } from '@shared/helpers/SignalRAspNetCoreHelper';
-import { LayoutStoreService } from '@shared/layout/layout-store.service';
+import { Component, Injector, OnInit, Renderer2 } from "@angular/core";
+import { AppComponentBase } from "@shared/app-component-base";
+import { SignalRAspNetCoreHelper } from "@shared/helpers/SignalRAspNetCoreHelper";
+import { LayoutStoreService } from "@shared/layout/layout-store.service";
 
 @Component({
-  templateUrl: './app.component.html'
+  templateUrl: "./app.component.html",
 })
 export class AppComponent extends AppComponentBase implements OnInit {
   sidebarExpanded: boolean;
@@ -18,22 +18,22 @@ export class AppComponent extends AppComponentBase implements OnInit {
   }
 
   ngOnInit(): void {
-    this.renderer.addClass(document.body, 'sidebar-mini');
+    // this.renderer.addClass(document.body, "sidebar-mini");
 
     SignalRAspNetCoreHelper.initSignalR();
 
-    abp.event.on('abp.notifications.received', (userNotification) => {
+    abp.event.on("abp.notifications.received", (userNotification) => {
       abp.notifications.showUiNotifyForUserNotification(userNotification);
 
       // Desktop notification
-      Push.create('AbpZeroTemplate', {
+      Push.create("AbpZeroTemplate", {
         body: userNotification.notification.data.message,
-        icon: abp.appPath + 'assets/app-logo-small.png',
+        icon: abp.appPath + "assets/app-logo-small.png",
         timeout: 6000,
         onClick: function () {
           window.focus();
           this.close();
-        }
+        },
       });
     });
 
