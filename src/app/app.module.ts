@@ -90,6 +90,6 @@ import { BookServiceProxy } from "@shared/service-proxies/service-proxies";
     SharedModule,
     NgxPaginationModule,
   ],
-  providers: [BookService, BookServiceProxy],
+  providers: [BookServiceProxy],
 })
 export class AppModule {}
