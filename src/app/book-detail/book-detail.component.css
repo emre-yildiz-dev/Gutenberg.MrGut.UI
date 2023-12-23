@@ -1,0 +1,14 @@
+.book-detail-container {
+  display: flex;
+  /* Additional styling */
+}
+
+.book-image img {
+  max-width: 200px;
+  /* Additional styling */
+}
+
+.book-info {
+  margin-left: 20px;
+  /* Additional styling */
+}

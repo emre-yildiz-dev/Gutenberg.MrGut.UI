@@ -209,6 +209,62 @@ export class BookServiceProxy {
         }
         return _observableOf(null as any);
     }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getBookById(id: number | undefined): Observable<BookDto> {
+        let url_ = this.baseUrl + "/api/services/app/Book/GetBookById?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetBookById(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetBookById(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<BookDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<BookDto>;
+        }));
+    }
+
+    protected processGetBookById(response: HttpResponseBase): Observable<BookDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = BookDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable()
@@ -1968,6 +2024,8 @@ export class BookDto implements IBookDto {
     title: string | undefined;
     author: string | undefined;
     imageUrl: string | undefined;
+    contentUrl: string | undefined;
+    languages: string | undefined;
 
     constructor(data?: IBookDto) {
         if (data) {
@@ -1984,6 +2042,8 @@ export class BookDto implements IBookDto {
             this.title = _data["title"];
             this.author = _data["author"];
             this.imageUrl = _data["imageUrl"];
+            this.contentUrl = _data["contentUrl"];
+            this.languages = _data["languages"];
         }
     }
 
@@ -2000,6 +2060,8 @@ export class BookDto implements IBookDto {
         data["title"] = this.title;
         data["author"] = this.author;
         data["imageUrl"] = this.imageUrl;
+        data["contentUrl"] = this.contentUrl;
+        data["languages"] = this.languages;
         return data;
     }
 
@@ -2016,6 +2078,8 @@ export interface IBookDto {
     title: string | undefined;
     author: string | undefined;
     imageUrl: string | undefined;
+    contentUrl: string | undefined;
+    languages: string | undefined;
 }
 
 export class ChangePasswordDto implements IChangePasswordDto {
