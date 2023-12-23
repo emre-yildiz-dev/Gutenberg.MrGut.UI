@@ -8,6 +8,7 @@ import { UsersComponent } from "./users/users.component";
 import { TenantsComponent } from "./tenants/tenants.component";
 import { RolesComponent } from "app/roles/roles.component";
 import { ChangePasswordComponent } from "./users/change-password/change-password.component";
+import { BookDetailComponent } from "./book-detail/book-detail.component";
 
 @NgModule({
   imports: [
@@ -20,6 +21,11 @@ import { ChangePasswordComponent } from "./users/change-password/change-password
           {
             path: "home",
             component: HomeComponent,
+            canActivate: [AppRouteGuard],
+          },
+          {
+            path: "book-detail/:id",
+            component: BookDetailComponent,
             canActivate: [AppRouteGuard],
           },
           {

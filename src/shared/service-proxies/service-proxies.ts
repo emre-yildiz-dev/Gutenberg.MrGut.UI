@@ -1964,6 +1964,7 @@ export interface IAuthenticateResultModel {
 }
 
 export class BookDto implements IBookDto {
+    id: number;
     title: string | undefined;
     author: string | undefined;
     imageUrl: string | undefined;
@@ -1979,6 +1980,7 @@ export class BookDto implements IBookDto {
 
     init(_data?: any) {
         if (_data) {
+            this.id = _data["id"];
             this.title = _data["title"];
             this.author = _data["author"];
             this.imageUrl = _data["imageUrl"];
@@ -1994,6 +1996,7 @@ export class BookDto implements IBookDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["title"] = this.title;
         data["author"] = this.author;
         data["imageUrl"] = this.imageUrl;
@@ -2009,6 +2012,7 @@ export class BookDto implements IBookDto {
 }
 
 export interface IBookDto {
+    id: number;
     title: string | undefined;
     author: string | undefined;
     imageUrl: string | undefined;

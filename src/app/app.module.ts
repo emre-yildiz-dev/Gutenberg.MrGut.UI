@@ -1,4 +1,3 @@
-import { BookService } from "./home/book.service";
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -42,6 +41,7 @@ import { SidebarMenuComponent } from "./layout/sidebar-menu.component";
 import { SearchComponent } from "./home/search/search.component";
 import { BookCardComponent } from "./home/book-card/book-card.component";
 import { BookServiceProxy } from "@shared/service-proxies/service-proxies";
+import { BookDetailComponent } from './book-detail/book-detail.component';
 
 @NgModule({
   declarations: [
@@ -74,6 +74,7 @@ import { BookServiceProxy } from "@shared/service-proxies/service-proxies";
     SidebarMenuComponent,
     SearchComponent,
     BookCardComponent,
+    BookDetailComponent,
   ],
   imports: [
     CommonModule,
