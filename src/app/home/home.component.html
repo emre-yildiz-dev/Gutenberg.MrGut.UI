@@ -1,6 +1,6 @@
 ﻿<div [@routerTransition]>
   <div class="search-container">
-    <app-search></app-search>
+    <app-search (search)="onSearch($event)"></app-search>
   </div>
   <section class="content-header">
     <div class="container-fluid">
@@ -16,6 +16,11 @@
       <div class="col-md-4" *ngFor="let book of books">
         <app-book-card [book]="book"></app-book-card>
       </div>
+      <!-- <pagination
+        [totalItems]="totalItems"
+        [itemsPerPage]="pageSize"
+        (pageChanged)="onPageChange($event)"
+      ></pagination> -->
     </div>
   </div>
 </div>

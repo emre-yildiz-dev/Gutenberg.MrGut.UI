@@ -14,11 +14,32 @@ import { appModuleAnimation } from "@shared/animations/routerTransition";
 })
 export class HomeComponent extends AppComponentBase {
   books: BookDto[];
+  totalItems: number;
+  currentPage: number = 1;
+  pageSize: number = 10;
 
   constructor(injector: Injector, private bookService: BookServiceProxy) {
     super(injector);
-    this.bookService.getBooks().subscribe((books) => {
-      this.books = books;
+    this.loadBooks();
+  }
+  ngOnInit(): void {}
+  loadBooks() {
+    this.bookService
+      .getBooks(this.currentPage, this.pageSize, "")
+      .subscribe((response) => {
+        this.books = response.items;
+        this.totalItems = response.totalCount;
+      });
+  }
+
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.loadBooks();
+  }
+
+  onSearch(searchTerm: string) {
+    this.bookService.getBooks(1, 10, searchTerm).subscribe((response) => {
+      this.books = response.items; // assuming your response structure
     });
   }
 }

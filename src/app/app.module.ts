@@ -41,7 +41,8 @@ import { SidebarMenuComponent } from "./layout/sidebar-menu.component";
 import { SearchComponent } from "./home/search/search.component";
 import { BookCardComponent } from "./home/book-card/book-card.component";
 import { BookServiceProxy } from "@shared/service-proxies/service-proxies";
-import { BookDetailComponent } from './book-detail/book-detail.component';
+import { BookDetailComponent } from "./book-detail/book-detail.component";
+import { PaginationModule } from "ngx-bootstrap/pagination";
 
 @NgModule({
   declarations: [
@@ -90,6 +91,7 @@ import { BookDetailComponent } from './book-detail/book-detail.component';
     ServiceProxyModule,
     SharedModule,
     NgxPaginationModule,
+    PaginationModule.forRoot(),
   ],
   providers: [BookServiceProxy],
 })

@@ -153,10 +153,25 @@ export class BookServiceProxy {
     }
 
     /**
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param searchTerm (optional) 
      * @return Success
      */
-    getBooks(): Observable<BookDto[]> {
-        let url_ = this.baseUrl + "/api/services/app/Book/GetBooks";
+    getBooks(pageNumber: number | undefined, pageSize: number | undefined, searchTerm: string | undefined): Observable<BookDtoPagedResultDto> {
+        let url_ = this.baseUrl + "/api/services/app/Book/GetBooks?";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
+        if (searchTerm === null)
+            throw new Error("The parameter 'searchTerm' cannot be null.");
+        else if (searchTerm !== undefined)
+            url_ += "searchTerm=" + encodeURIComponent("" + searchTerm) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -174,14 +189,14 @@ export class BookServiceProxy {
                 try {
                     return this.processGetBooks(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<BookDto[]>;
+                    return _observableThrow(e) as any as Observable<BookDtoPagedResultDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<BookDto[]>;
+                return _observableThrow(response_) as any as Observable<BookDtoPagedResultDto>;
         }));
     }
 
-    protected processGetBooks(response: HttpResponseBase): Observable<BookDto[]> {
+    protected processGetBooks(response: HttpResponseBase): Observable<BookDtoPagedResultDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -192,14 +207,7 @@ export class BookServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200.push(BookDto.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
+            result200 = BookDtoPagedResultDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -2080,6 +2088,61 @@ export interface IBookDto {
     imageUrl: string | undefined;
     contentUrl: string | undefined;
     languages: string | undefined;
+}
+
+export class BookDtoPagedResultDto implements IBookDtoPagedResultDto {
+    items: BookDto[] | undefined;
+    totalCount: number;
+
+    constructor(data?: IBookDtoPagedResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items.push(BookDto.fromJS(item));
+            }
+            this.totalCount = _data["totalCount"];
+        }
+    }
+
+    static fromJS(data: any): BookDtoPagedResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new BookDtoPagedResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount;
+        return data;
+    }
+
+    clone(): BookDtoPagedResultDto {
+        const json = this.toJSON();
+        let result = new BookDtoPagedResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IBookDtoPagedResultDto {
+    items: BookDto[] | undefined;
+    totalCount: number;
 }
 
 export class ChangePasswordDto implements IChangePasswordDto {
