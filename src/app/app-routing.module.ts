@@ -9,6 +9,7 @@ import { TenantsComponent } from "./tenants/tenants.component";
 import { RolesComponent } from "app/roles/roles.component";
 import { ChangePasswordComponent } from "./users/change-password/change-password.component";
 import { BookDetailComponent } from "./book-detail/book-detail.component";
+import { BookReadingComponent } from "./book-reading/book-reading.component";
 
 @NgModule({
   imports: [
@@ -26,6 +27,11 @@ import { BookDetailComponent } from "./book-detail/book-detail.component";
           {
             path: "book-detail/:id",
             component: BookDetailComponent,
+            canActivate: [AppRouteGuard],
+          },
+          {
+            path: "book-reading/:id",
+            component: BookReadingComponent,
             canActivate: [AppRouteGuard],
           },
           {

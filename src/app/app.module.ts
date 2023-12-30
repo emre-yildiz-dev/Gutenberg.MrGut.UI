@@ -43,6 +43,7 @@ import { BookCardComponent } from "./home/book-card/book-card.component";
 import { BookServiceProxy } from "@shared/service-proxies/service-proxies";
 import { BookDetailComponent } from "./book-detail/book-detail.component";
 import { PaginationModule } from "ngx-bootstrap/pagination";
+import { BookReadingComponent } from './book-reading/book-reading.component';
 
 @NgModule({
   declarations: [
@@ -76,6 +77,7 @@ import { PaginationModule } from "ngx-bootstrap/pagination";
     SearchComponent,
     BookCardComponent,
     BookDetailComponent,
+    BookReadingComponent,
   ],
   imports: [
     CommonModule,
