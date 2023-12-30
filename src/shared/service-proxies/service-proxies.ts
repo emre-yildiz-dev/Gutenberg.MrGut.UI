@@ -219,6 +219,72 @@ export class BookServiceProxy {
     }
 
     /**
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param searchTerm (optional) 
+     * @return Success
+     */
+    getUserBooks(pageNumber: number | undefined, pageSize: number | undefined, searchTerm: string | undefined): Observable<BookDtoPagedResultDto> {
+        let url_ = this.baseUrl + "/api/services/app/Book/GetUserBooks?";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
+        if (searchTerm === null)
+            throw new Error("The parameter 'searchTerm' cannot be null.");
+        else if (searchTerm !== undefined)
+            url_ += "searchTerm=" + encodeURIComponent("" + searchTerm) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetUserBooks(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetUserBooks(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<BookDtoPagedResultDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<BookDtoPagedResultDto>;
+        }));
+    }
+
+    protected processGetUserBooks(response: HttpResponseBase): Observable<BookDtoPagedResultDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = BookDtoPagedResultDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
      * @param id (optional) 
      * @return Success
      */
@@ -2034,6 +2100,7 @@ export class BookDto implements IBookDto {
     imageUrl: string | undefined;
     contentUrl: string | undefined;
     languages: string | undefined;
+    content: string | undefined;
 
     constructor(data?: IBookDto) {
         if (data) {
@@ -2052,6 +2119,7 @@ export class BookDto implements IBookDto {
             this.imageUrl = _data["imageUrl"];
             this.contentUrl = _data["contentUrl"];
             this.languages = _data["languages"];
+            this.content = _data["content"];
         }
     }
 
@@ -2070,6 +2138,7 @@ export class BookDto implements IBookDto {
         data["imageUrl"] = this.imageUrl;
         data["contentUrl"] = this.contentUrl;
         data["languages"] = this.languages;
+        data["content"] = this.content;
         return data;
     }
 
@@ -2088,6 +2157,7 @@ export interface IBookDto {
     imageUrl: string | undefined;
     contentUrl: string | undefined;
     languages: string | undefined;
+    content: string | undefined;
 }
 
 export class BookDtoPagedResultDto implements IBookDtoPagedResultDto {

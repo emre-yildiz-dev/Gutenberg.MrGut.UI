@@ -1,6 +1,6 @@
 ﻿<div [@routerTransition]>
   <div class="search-container">
-    <app-search (search)="onSearch($event)"></app-search>
+    <app-search (search)="onSearch($event)" (onMyBooks)="onMyBooksClick($event)"></app-search>
   </div>
   <section class="content-header">
     <div class="container-fluid">
