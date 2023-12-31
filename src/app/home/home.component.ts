@@ -43,7 +43,7 @@ export class HomeComponent extends AppComponentBase {
     });
   }
   onMyBooksClick(searchTerm: string) {
-    this.bookService.getUserBooks(1, 20, searchTerm).subscribe((response) => {
+    this.bookService.getUserBooks(1, 33, searchTerm).subscribe((response) => {
       this.books = response.items; // assuming your response structure
     });
   }

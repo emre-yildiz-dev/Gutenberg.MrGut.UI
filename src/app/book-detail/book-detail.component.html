@@ -1,13 +1,16 @@
-<div class="book-detail-container">
-  <div class="book-image">
-    <img [src]="book.imageUrl" alt="Cover image of {{ book.title }}" />
+
+<div class="detail-container">
+    <div class="book-detail-container">
+        <div class="book-image">
+            <img src="{{book.imageUrl}}" alt="Cover image of {{ book.title }}" />
+        </div>
+        <div class="book-info">
+            <h2>{{ book.title }}</h2>
+            <p><strong>Author:</strong> {{ book.author }}</p>
+            <p>Languages: {{ book.languages }}</p>
+            <p>Last read page: 61 </p>
+            <a [routerLink]="['/app/book-detail', book.id, 'read-book', book.gutenbergId]" class="btn btn-primary">Start Reading</a>
+        </div>
+    </div>
   </div>
-  <div class="book-info">
-    <h2>{{ book.title }}</h2>
-    <p><strong>Author:</strong> {{ book.author }}</p>
-    <p>Languages: {{ book.languages }}</p>
-    <a [href]="book.contentUrl" target="_blank" class="btn btn-primary"
-      >Start Reading</a
-    >
-  </div>
-</div>
+  

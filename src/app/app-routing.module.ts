@@ -29,11 +29,7 @@ import { BookReadingComponent } from "./book-reading/book-reading.component";
             component: BookDetailComponent,
             canActivate: [AppRouteGuard],
           },
-          {
-            path: "book-reading/:id",
-            component: BookReadingComponent,
-            canActivate: [AppRouteGuard],
-          },
+          { path: "read-book/:gutenbergId", component: BookReadingComponent, canActivate: [AppRouteGuard] },
           {
             path: "users",
             component: UsersComponent,

@@ -339,6 +339,82 @@ export class BookServiceProxy {
         }
         return _observableOf(null as any);
     }
+
+    /**
+     * @param bookId (optional) 
+     * @param gutenbergId (optional) 
+     * @param maxResultCount (optional) 
+     * @param skipCount (optional) 
+     * @param sorting (optional) 
+     * @return Success
+     */
+    getPaginatedBookPages(bookId: number | undefined, gutenbergId: number | undefined, maxResultCount: number | undefined, skipCount: number | undefined, sorting: string | undefined): Observable<BookPageDtoPagedResultDto> {
+        let url_ = this.baseUrl + "/api/services/app/Book/GetPaginatedBookPages?";
+        if (bookId === null)
+            throw new Error("The parameter 'bookId' cannot be null.");
+        else if (bookId !== undefined)
+            url_ += "BookId=" + encodeURIComponent("" + bookId) + "&";
+        if (gutenbergId === null)
+            throw new Error("The parameter 'gutenbergId' cannot be null.");
+        else if (gutenbergId !== undefined)
+            url_ += "GutenbergId=" + encodeURIComponent("" + gutenbergId) + "&";
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&";
+        if (skipCount === null)
+            throw new Error("The parameter 'skipCount' cannot be null.");
+        else if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&";
+        if (sorting === null)
+            throw new Error("The parameter 'sorting' cannot be null.");
+        else if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPaginatedBookPages(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPaginatedBookPages(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<BookPageDtoPagedResultDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<BookPageDtoPagedResultDto>;
+        }));
+    }
+
+    protected processGetPaginatedBookPages(response: HttpResponseBase): Observable<BookPageDtoPagedResultDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = BookPageDtoPagedResultDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable()
@@ -2095,6 +2171,7 @@ export interface IAuthenticateResultModel {
 
 export class BookDto implements IBookDto {
     id: number;
+    gutenbergId: number;
     title: string | undefined;
     author: string | undefined;
     imageUrl: string | undefined;
@@ -2114,6 +2191,7 @@ export class BookDto implements IBookDto {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.gutenbergId = _data["gutenbergId"];
             this.title = _data["title"];
             this.author = _data["author"];
             this.imageUrl = _data["imageUrl"];
@@ -2133,6 +2211,7 @@ export class BookDto implements IBookDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["gutenbergId"] = this.gutenbergId;
         data["title"] = this.title;
         data["author"] = this.author;
         data["imageUrl"] = this.imageUrl;
@@ -2152,6 +2231,7 @@ export class BookDto implements IBookDto {
 
 export interface IBookDto {
     id: number;
+    gutenbergId: number;
     title: string | undefined;
     author: string | undefined;
     imageUrl: string | undefined;
@@ -2212,6 +2292,116 @@ export class BookDtoPagedResultDto implements IBookDtoPagedResultDto {
 
 export interface IBookDtoPagedResultDto {
     items: BookDto[] | undefined;
+    totalCount: number;
+}
+
+export class BookPageDto implements IBookPageDto {
+    pageNumber: number;
+    content: string | undefined;
+    gutenbergId: number;
+    bookId: number;
+
+    constructor(data?: IBookPageDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.pageNumber = _data["pageNumber"];
+            this.content = _data["content"];
+            this.gutenbergId = _data["gutenbergId"];
+            this.bookId = _data["bookId"];
+        }
+    }
+
+    static fromJS(data: any): BookPageDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new BookPageDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["pageNumber"] = this.pageNumber;
+        data["content"] = this.content;
+        data["gutenbergId"] = this.gutenbergId;
+        data["bookId"] = this.bookId;
+        return data;
+    }
+
+    clone(): BookPageDto {
+        const json = this.toJSON();
+        let result = new BookPageDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IBookPageDto {
+    pageNumber: number;
+    content: string | undefined;
+    gutenbergId: number;
+    bookId: number;
+}
+
+export class BookPageDtoPagedResultDto implements IBookPageDtoPagedResultDto {
+    items: BookPageDto[] | undefined;
+    totalCount: number;
+
+    constructor(data?: IBookPageDtoPagedResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items.push(BookPageDto.fromJS(item));
+            }
+            this.totalCount = _data["totalCount"];
+        }
+    }
+
+    static fromJS(data: any): BookPageDtoPagedResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new BookPageDtoPagedResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount;
+        return data;
+    }
+
+    clone(): BookPageDtoPagedResultDto {
+        const json = this.toJSON();
+        let result = new BookPageDtoPagedResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IBookPageDtoPagedResultDto {
+    items: BookPageDto[] | undefined;
     totalCount: number;
 }
 

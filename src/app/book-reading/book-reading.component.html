@@ -1,1 +1,13 @@
-<p>book-reading works!</p>
+<div class="main-container">
+    <div class="page-buttons">
+        <button class="page-button" (click)="loadPreviousPage()" [disabled]="currentPageNumber <= 1">Previous Page</button>
+        <button class="page-button" (click)="loadNextPage()" [disabled]="currentPageNumber >= totalItems / pageSize">Next Page</button>
+    </div>
+    
+    <div class="book-container">
+        <!-- Display only the content of the current page -->
+        <div class="book-page" *ngIf="currentBookPage">
+            <div [innerHTML]="currentBookPage.content"></div>
+        </div>
+    </div>     
+</div>
