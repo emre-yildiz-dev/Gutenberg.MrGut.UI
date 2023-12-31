@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { BookPageDto, BookServiceProxy } from '@shared/service-proxies/service-proxies';
+import { BookPageDto, BookServiceProxy, MemoizedPageDto } from '@shared/service-proxies/service-proxies';
 
 @Component({
   selector: 'app-book-reading',
@@ -26,6 +25,8 @@ export class BookReadingComponent implements OnInit {
       this.bookId = +params['bookId']; // The '+' converts the string to a number
       this.gutenbergId = +params['gutenbergId'];
     this.loadPages();});
+    
+ 
   }
 
 
@@ -49,6 +50,7 @@ export class BookReadingComponent implements OnInit {
     if (this.currentPageNumber > 1) {
       this.currentPageNumber--;
       this.loadPages();
+
     }
   }
 
@@ -56,7 +58,24 @@ export class BookReadingComponent implements OnInit {
     if (this.currentPageNumber * this.pageSize < this.totalItems) {
       this.currentPageNumber++;
       this.loadPages();
+      this.memoizeLastReadPage(this.currentPageNumber);
     }
   }
-}
 
+  memoizeLastReadPage(lastReadPage: number): void {
+    const pageDto: MemoizedPageDto = {
+      gutenbergId: this.gutenbergId,
+      lastReadPage: lastReadPage,
+    };
+
+
+    this.bookService.postUserBookMapping(pageDto).subscribe({
+      next: (mapping) => {
+        console.log('Last read page updated:', mapping);
+      },
+      error: (error) => {
+        console.error('Error updating last read page:', error);
+      }
+    });
+}
+}
