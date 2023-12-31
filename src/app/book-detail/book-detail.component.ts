@@ -12,6 +12,7 @@ import {
 })
 export class BookDetailComponent implements OnInit {
   book: BookDto;
+  lastPage: number = 1;
 
   constructor(
     private route: ActivatedRoute,
@@ -22,6 +23,9 @@ export class BookDetailComponent implements OnInit {
     const bookId = this.route.snapshot.paramMap.get("id");
     this.bookService.getBookById(+bookId).subscribe((book) => {
       this.book = book;
+    });
+    this.bookService.getUserBookMapping(0, this.book.gutenbergId).subscribe((mapping) => {
+      this.lastPage = mapping.lastReadPage;
     });
   }
 }

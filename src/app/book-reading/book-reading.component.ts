@@ -12,21 +12,20 @@ export class BookReadingComponent implements OnInit {
   bookId: number | undefined;
   gutenbergId: number | undefined;
   currentPageNumber: number = 1;
-  pageSize: number = 11; // Adjust as needed
+  pageSize: number = 1; // Adjust as needed
   bookPages: BookPageDto[] = [];
   totalItems: number = 0;
   currentBookPage: BookPageDto | undefined;
 
-  constructor(private route: ActivatedRoute,private bookService: BookServiceProxy) {
+  constructor(private route: ActivatedRoute, private bookService: BookServiceProxy) {
   }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      this.bookId = +params['bookId']; // The '+' converts the string to a number
+      //this.bookId = +params['bookId']; // The '+' converts the string to a number
       this.gutenbergId = +params['gutenbergId'];
-    this.loadPages();});
-    
- 
+      this.fetchLastReadPage();
+    });
   }
 
 
@@ -50,7 +49,7 @@ export class BookReadingComponent implements OnInit {
     if (this.currentPageNumber > 1) {
       this.currentPageNumber--;
       this.loadPages();
-
+      this.memoizeLastReadPage(this.currentPageNumber);
     }
   }
 
@@ -63,11 +62,11 @@ export class BookReadingComponent implements OnInit {
   }
 
   memoizeLastReadPage(lastReadPage: number): void {
-    const pageDto: MemoizedPageDto = {
+    const pageDto = new MemoizedPageDto();
+    pageDto.init({
       gutenbergId: this.gutenbergId,
       lastReadPage: lastReadPage,
-    };
-
+    });
 
     this.bookService.postUserBookMapping(pageDto).subscribe({
       next: (mapping) => {
@@ -77,5 +76,19 @@ export class BookReadingComponent implements OnInit {
         console.error('Error updating last read page:', error);
       }
     });
-}
+  }
+  fetchLastReadPage(): void {
+    this.bookService.getUserBookMapping(0, this.gutenbergId).subscribe({
+      next: (memoizedPageDto) => {
+        this.currentPageNumber = memoizedPageDto.lastReadPage;
+        this.loadPages();
+      },
+      error: (error) => {
+        console.error('Error fetching last read page:', error);
+        // Fallback to the first page if there's an error
+        this.currentPageNumber = 1;
+        this.loadPages();
+      }
+    });
+  }
 }

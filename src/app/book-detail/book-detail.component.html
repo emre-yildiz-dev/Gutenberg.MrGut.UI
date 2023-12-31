@@ -8,8 +8,8 @@
             <h2>{{ book.title }}</h2>
             <p><strong>Author:</strong> {{ book.author }}</p>
             <p>Languages: {{ book.languages }}</p>
-            <p>Last read page: 61 </p>
-            <a [routerLink]="['/app/book-detail', book.id, 'read-book', book.gutenbergId]" class="btn btn-primary">Start Reading</a>
+            <p>Last read page: {{ lastPage }} </p>
+            <a [routerLink]="['/app/read-book', book.gutenbergId]" class="btn btn-primary">Start Reading</a>
         </div>
     </div>
   </div>
