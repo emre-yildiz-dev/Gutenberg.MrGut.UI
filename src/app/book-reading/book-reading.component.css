@@ -1,34 +1,54 @@
-.main-container{
-    background: rgb(20, 19, 19);
+html, body {
     height: 100%;
+    margin: 0;
+    padding: 0;
 }
-.book-container{
-    color:white;
+
+.main-container {
+    background: rgb(20, 19, 19);
+    height: 100vh; /* or use flex-grow if using flex on the body */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* This will push the footer to the bottom */
+}
+
+.book-container {
+    color: white;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    flex-grow: 1; /* Ensures it takes up available space */
 }
 
-.book-page{
-    width: 60%;
+.book-page {
+    width: 40%;
+    margin: auto;
+    max-width: 800px;
+    padding: 20px; /* Add some padding to ensure content doesn't touch the borders */
+    background-color: #1e1e1e; /* Optional: adds a background color to the content area */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: adds a subtle shadow for depth */
+    border-radius: 4px; /* Optional: rounds the corners of the border */
 }
 
-.page-info{
+
+.page-info {
     font-weight: bold;
 }
 
-.page-buttons{
+.page-buttons {
     display: flex;
+    justify-content: center;
     gap: 5px;
     position: fixed;
-    right: 20;
-    bottom: 20;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%);
 }
 
-.page-button{
-    border:0px solid;
-    border-radius:5px;
+.page-button {
+    border: 0px solid;
+    border-radius: 5px;
     padding: 10px 25px;
     cursor: pointer;
 }

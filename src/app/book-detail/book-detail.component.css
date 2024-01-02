@@ -1,29 +1,37 @@
+.detail-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
 
-  .detail-container{
-      height: 100%;
-      display:flex;
-      justify-content: center;
-      align-items: center;
-  }
+.book-detail-container {
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    align-items: center; /* Center children horizontally */
+    justify-content: center; /* Center children vertically */
+    background: #e7e7e7;
+    box-shadow: 0px 10px 22px -7px rgba(0,0,0,0.45);
+    padding: 40px;
+    border-radius: 16px;
+    width: 60%;
+    max-width: 800px;
+}
 
-  .book-detail-container {
-      display: flex;
-      background: #e7e7e7;
-      -webkit-box-shadow: 0px 10px 22px -7px rgba(0,0,0,0.45);
-      -moz-box-shadow: 0px 10px 22px -7px rgba(0,0,0,0.45);
-      box-shadow: 0px 10px 22px -7px rgba(0,0,0,0.45);
-      padding: 20px 40px;
-      border:0px solid;
-      border-radius: 16px;
-  }
+.book-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 20px; /* Add space below the image */
+}
 
-  .book-image img {
-      max-width: 200px;
-      border:0px solid;
-      border-radius: 8px;
-  }
+.book-info {
+    text-align: center; /* Center the text inside .book-info */
+    margin-bottom: 20px; /* Add space below the text before the button */
+}
 
-  .book-info {
-      margin-left: 20px; 
-  }
-
+.btn-primary {
+    padding: 10px 20px;
+    font-size: 1em;
+}
